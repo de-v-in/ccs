@@ -1,4 +1,4 @@
-package internal
+package handlers
 
 import (
 	"github.com/labstack/echo/v4"
@@ -23,5 +23,6 @@ func NewServer() *Server {
 }
 
 func (s *Server) Start() {
+	s.Router = InitRouter(s)
 	s.Echo.Logger.Fatal(s.Echo.Start(":1323"))
 }

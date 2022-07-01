@@ -1,8 +1,8 @@
 package main
 
-import "ccs/internal"
+import "ccs/internal/handlers"
 
 func main() {
-	s := internal.NewServer()
+	s := handlers.NewServer()
 	s.Start()
 }

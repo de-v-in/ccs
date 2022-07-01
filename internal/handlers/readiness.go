@@ -1,17 +1,17 @@
 package handlers
 
 import (
-	"ccs/internal"
+	"ccs/internal/clients"
 
 	"github.com/labstack/echo/v4"
 )
 
-func GetUserInfoRoute(r *internal.Router) *echo.Route {
-	return r.Root.GET("/", getHandler(r))
+func GetUserInfoRoute(r *Router) *echo.Route {
+	return r.Root.GET("", getHandler(r))
 }
 
-func getHandler(r *internal.Router) echo.HandlerFunc {
+func getHandler(r *Router) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.String(200, "Hello, World!")
+		return c.String(200, clients.CheckSolScan())
 	}
 }
