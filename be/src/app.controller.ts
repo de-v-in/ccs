@@ -15,6 +15,22 @@ export class AppController {
     @Query('limit') limit: number,
   ) {
     console.time('getAccountSplTransfers');
+    Promise.allSettled =
+      Promise.allSettled ||
+      ((promises) =>
+        Promise.all(
+          promises.map((p) =>
+            p
+              .then((value) => ({
+                status: 'fulfilled',
+                value,
+              }))
+              .catch((reason) => ({
+                status: 'rejected',
+                reason,
+              })),
+          ),
+        ));
     const url = `https://public-api.solscan.io/account/splTransfers?account=${account}&offset=${offset}&limit=${limit}`;
     const response: any = await this.appService.getReq(url);
 
@@ -30,14 +46,15 @@ export class AppController {
     );
 
     const transactionDetailList = [];
-    const promises = [];
+    const promiseList = [];
     for (const { signature } of tokenAddressSignatureList) {
       const transactionDetailUrl = `https://public-api.solscan.io/transaction/${signature}`;
       const txDetail: any = this.appService.getReq(transactionDetailUrl);
-      promises.push(txDetail);
+      // transactionDetailList.push(txDetail.data.tokenTransfers);
+      promiseList.push(txDetail);
     }
 
-    await Promise.allSettled(promises).then((results) =>
+    await Promise.allSettled(promiseList).then((results) =>
       results.forEach((result: any) => {
         if (result.value.data) {
           transactionDetailList.push(result.value.data.tokenTransfers);
