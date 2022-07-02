@@ -1,14 +1,32 @@
 package clients
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
 )
 
-func CheckSolScan() string {
-	req, err := http.NewRequest(http.MethodGet, "https://public-api.solscan.io/chaininfo/", nil)
+type ChainInfo struct {
+	BlockHeight      int `json:"blockHeight"`
+	CurrentEpoch     int `json:"currentEpoch"`
+	AbsoluteSlot     int `json:"absoluteSlot"`
+	TransactionCount int `json:"transactionCount"`
+}
+
+type TransactionItem struct {
+	BlockTime          int    `json:"blockTime"`
+	Slot               int    `json:"slot"`
+	TxHash             string `json:"txHash"`
+	Fee                int    `json:"fee"`
+	Status             string `json:"status"`
+	Lamport            int    `json:"lamport"`
+	IncludeSPLTransfer bool   `json:"includeSPLTransfer"`
+}
+
+func DoHttpReq(url string) []byte {
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		fmt.Printf("client: could not create request: %s\n", err)
 		os.Exit(1)
@@ -24,6 +42,15 @@ func CheckSolScan() string {
 		fmt.Printf("client: could not read response body: %s\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("client: response body: %s\n", resBody)
-	return string(resBody)
+	return resBody
+}
+
+func ParseJsonResp[T any](resp []byte) *T {
+	var data *T
+	err := json.Unmarshal(resp, &data)
+	if err != nil {
+		fmt.Printf("could not unmarshal json: %s\n", err)
+		return nil
+	}
+	return data
 }

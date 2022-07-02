@@ -12,7 +12,8 @@ func InitRouter(s *Server) *Router {
 	}
 
 	router.Routes = []*echo.Route{
-		GetUserInfoRoute(router),
+		GetReadiness(router),
+		GetAccountTransaction(router),
 	}
 
 	return router
