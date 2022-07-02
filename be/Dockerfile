@@ -46,10 +46,12 @@ COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 
 RUN apk update && apk add curl
-RUN apk add openssl-dev --no-cache \
+RUN apk update \
+  && apk add curl --no-cache \
+  && apk add openssl-dev --no-cache \
   && mkdir /lib64 \
   && ln -s /lib/ld-musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 \
-  && wget -qO- https://downloads.sourceforge.net/project/videlibri/Xidel/Xidel%200.9.6/xidel-0.9.6.linux64.tar.gz \
+  && wget -qO- https://downloads.sourceforge.net/project/videlibri/Xidel/Xidel%200.9.8/xidel-0.9.8.linux64.tar.gz \
   | tar -xzv xidel -C /bin
 
 CMD [ "node", "dist/main.js" ]
