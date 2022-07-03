@@ -1,7 +1,12 @@
 import React, { useState } from "react";
+
 import LimitSelect from "./LimitSelect";
 
-export default function AccountSearch({ account, setAccount, fetchAccountTransfers }) {
+export default function AccountSearch({
+  account,
+  setAccount,
+  fetchAccountTransfers,
+}) {
   const [isFetchAccount, setIsFetchAccount] = useState(false);
 
   const handleChange = (e: any) => {
@@ -11,13 +16,12 @@ export default function AccountSearch({ account, setAccount, fetchAccountTransfe
   const handleKeyDown = async (e: any) => {
     if (!isFetchAccount) {
       if (e.key === "Enter" || e.keyCode === 13) {
-        setIsFetchAccount(true)
+        setIsFetchAccount(true);
         await fetchAccountTransfers();
-        setIsFetchAccount(false)
+        setIsFetchAccount(false);
       }
     }
   };
-
 
   return (
     <div className="flex items-center flex-col">

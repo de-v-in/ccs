@@ -17,6 +17,3 @@ export async function getReq(fetchUrl: string) {
     throw new Error("Could not fetch data!");
   }
 }
-
-
-

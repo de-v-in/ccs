@@ -1,6 +1,6 @@
-import { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
+import { Fragment, useState } from "react";
 
 const limits = [
   { amount: 10 },
@@ -10,7 +10,7 @@ const limits = [
 ];
 
 export default function LimitSelect({ selected, setSelected }) {
-//   const [selected, setSelected] = useState(limits[0]);
+  //   const [selected, setSelected] = useState(limits[0]);
   const handleChange = () => {
     console.log(selected);
     return setSelected;
