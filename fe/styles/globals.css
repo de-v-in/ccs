@@ -18,3 +18,5 @@ a {
 * {
   box-sizing: border-box;
 }
+
+thead { position: sticky; top: 0; }
