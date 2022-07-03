@@ -45,27 +45,37 @@ export class AppController {
       }),
     );
 
-    const transactionDetailList = [];
+    const transactionDetailObj = {};
     const promiseList = [];
     for (const { signature } of tokenAddressSignatureList) {
       const transactionDetailUrl = `https://public-api.solscan.io/transaction/${signature}`;
-      const txDetail: any = this.appService.getReq(transactionDetailUrl);
-      // transactionDetailList.push(txDetail.data.tokenTransfers);
+      const txDetail: any = new Promise((resolve, reject) => {
+        this.appService
+          .getReq(transactionDetailUrl)
+          .then((res: any) => {
+            resolve({
+              tokenTransfers: res.data.tokenTransfers,
+              signature,
+            });
+          })
+          .catch((err) => reject(err));
+      });
       promiseList.push(txDetail);
     }
 
     await Promise.allSettled(promiseList).then((results) =>
       results.forEach((result: any) => {
-        if (result.value.data) {
-          transactionDetailList.push(result.value.data.tokenTransfers);
+        if (result) {
+          const { signature, tokenTransfers } = result.value;
+          if (signature) {
+            transactionDetailObj[signature] = tokenTransfers;
+          }
         }
       }),
     );
 
     console.timeEnd('getAccountSplTransfers');
-    return {
-      transactionDetailList,
-    };
+    return transactionDetailObj;
   }
 
   @Get('/price/:id')
