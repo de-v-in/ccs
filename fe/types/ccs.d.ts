@@ -1,6 +1,7 @@
 type TTransactionType = "BUY" | "SELL" | "UNDEFINED";
 
 interface ITransaction {
+  txId: string;
   type: TTransactionType;
   tokenAddress: string;
 }

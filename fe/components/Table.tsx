@@ -1,24 +1,42 @@
+import { TransactionResponse } from "@solana/web3.js";
+import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 
 import { getTokenMetadataAPI, getTokenOpenSeaPricingAPI } from "../apis/crawl";
 import { cx } from "../utils/common";
+import { getW3Service } from "../utils/web3";
+import { TokenInfoDialog } from "./Dialog";
+import { TextWithCopy } from "./TextWithCopy";
 
-const RowInfo = (item: ITransaction) => {
+const RowInfo: React.FC<
+  {
+    onPress: (item: ITokenMeta | null) => void;
+  } & ITransaction
+> = (item) => {
   const [metaLoading, setMetaLoading] = useState(false);
   const [priceLoading, setPriceLoading] = useState(false);
   const [meta, setMeta] = useState<ITokenMeta | null>(null);
   const [price, setPrice] = useState<number | null>(null);
+  const [trans, setTrans] = useState<TransactionResponse | null>(null);
+
+  const handleInfo = () => item.onPress(meta);
 
   useEffect(() => {
     setMetaLoading(true);
     setPriceLoading(true);
     getTokenMetadataAPI(item.tokenAddress)
       .then((data) => setMeta(data))
+      .catch((e) => {})
       .finally(() => setMetaLoading(false));
     getTokenOpenSeaPricingAPI(item.tokenAddress)
       .then((data) => (data ? setPrice(data) : null))
+      .catch((e) => {})
       .finally(() => setPriceLoading(false));
-  }, [item.tokenAddress]);
+    getW3Service()
+      .getTransInfo(item.txId)
+      .catch((e) => {})
+      .then((data) => !!data && setTrans(data));
+  }, [item]);
 
   return (
     <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -44,9 +62,19 @@ const RowInfo = (item: ITransaction) => {
           </div>
         )}
         {!metaLoading && !!meta && (
-          <img alt="logo" className="rounded-md h-16 w-16" src={meta.image} />
+          <img
+            alt="logo"
+            className="object-contain rounded-md h-16 w-16"
+            src={meta.image}
+          />
         )}
       </td>
+      <th
+        scope="row"
+        className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap"
+      >
+        <TextWithCopy text={item.txId} />
+      </th>
       <th
         scope="row"
         className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap"
@@ -57,7 +85,7 @@ const RowInfo = (item: ITransaction) => {
         scope="row"
         className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap"
       >
-        {item.tokenAddress}
+        <TextWithCopy text={item.tokenAddress} />
       </th>
       <td className="px-6 py-4">
         <div className="flex">
@@ -95,50 +123,83 @@ const RowInfo = (item: ITransaction) => {
         )}
         {!priceLoading && (price ?? "--")}
       </td>
+      <th
+        scope="row"
+        className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap"
+      >
+        {trans?.blockTime
+          ? moment(new Date(trans.blockTime * 1000)).fromNow()
+          : "--"}
+      </th>
       <td className="px-6 py-4 text-right">
-        <a
-          href="#"
+        <button
+          type="button"
+          onClick={handleInfo}
           className="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-5"
         >
-          Info
-        </a>
+          Item Info
+        </button>
       </td>
     </tr>
   );
 };
 
 export const Table = ({ items = [] }: { items: ITransaction[] }) => {
+  const [showModal, setShowModal] = useState(false);
+  const [crrTokenMeta, setTokenMeta] = useState<ITokenMeta | undefined>(
+    undefined
+  );
+
+  const handleClose = () => setShowModal(false);
+  const handleOpenDialog = (item: ITokenMeta) => {
+    setTokenMeta(item);
+    setShowModal(true);
+  };
+
   const renderItems = useMemo(() => {
-    return items.map((item) => {
-      return <RowInfo key={item.tokenAddress} {...item} />;
+    return items.map((item, idx) => {
+      return <RowInfo key={idx} {...item} onPress={handleOpenDialog} />;
     });
   }, [items]);
 
   return (
-    <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-      <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-        <tr>
-          <th scope="col" className="px-6 py-3 whitespace-nowrap">
-            Image
-          </th>
-          <th scope="col" className="px-6 py-3 whitespace-nowrap">
-            Name
-          </th>
-          <th scope="col" className="px-6 py-3 whitespace-nowrap">
-            Token Address
-          </th>
-          <th scope="col" className="px-6 py-3">
-            Type
-          </th>
-          <th scope="col" className="px-6 py-3">
-            OpenSea Price
-          </th>
-          <th scope="col" className="px-6 py-3">
-            <span className="sr-only">View Info</span>
-          </th>
-        </tr>
-      </thead>
-      <tbody>{renderItems}</tbody>
-    </table>
+    <>
+      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th scope="col" className="px-6 py-3 whitespace-nowrap">
+              Image
+            </th>
+            <th scope="col" className="px-6 py-3 whitespace-nowrap">
+              Tx
+            </th>
+            <th scope="col" className="px-6 py-3 whitespace-nowrap">
+              Name
+            </th>
+            <th scope="col" className="px-6 py-3 whitespace-nowrap">
+              Token Address
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Type
+            </th>
+            <th scope="col" className="px-6 py-3">
+              OpenSea Price
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Time
+            </th>
+            <th scope="col" className="px-6 py-3">
+              <span className="sr-only">View Info</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>{renderItems}</tbody>
+      </table>
+      <TokenInfoDialog
+        isOpen={showModal}
+        closeModal={handleClose}
+        item={crrTokenMeta}
+      />
+    </>
   );
 };

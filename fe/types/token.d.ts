@@ -5,12 +5,12 @@ interface ITokenMeta {
   seller_fee_basis_points: number;
   image: string;
   external_url: string;
-  properties: ITokenroperties;
+  properties: ITokenProperties;
   attributes: ITokenAttribute[];
   collection: ITokenCollection;
 }
 
-interface ITokenroperties {
+interface ITokenProperties {
   files: ITokenMedia[];
   category: string;
   creators: ITokenCreator[];

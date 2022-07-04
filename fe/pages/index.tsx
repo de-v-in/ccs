@@ -26,27 +26,32 @@ const Home: NextPage = () => {
 
   const fetchAccountTransfers = async () => {
     setLoading(true);
-    const data = await getAccountTransactionsAPI(account, limit.amount);
-    const txArray: ITransaction[] = [];
-    for (const k in data) {
-      const transferList = data[k];
-      const stepnTransferList = transferList.filter(({ token }) => {
-        return token.decimals === 0;
-      });
-      const tokenTransferList: ITransaction[] = stepnTransferList.map((tx) => {
-        const { source_owner, destination_owner, token } = tx;
-        return {
-          tokenAddress: token.address,
-          type:
-            {
-              [source_owner]: "SELL",
-              [destination_owner]: "BUY",
-            }[account] || "UNDEFINED",
-        } as ITransaction;
-      });
-      txArray.push(...tokenTransferList);
-    }
-    setTransferDetails(txArray);
+    try {
+      const data = await getAccountTransactionsAPI(account, limit.amount);
+      const txArray: ITransaction[] = [];
+      for (const k in data) {
+        const transferList = data[k];
+        const stepnTransferList = transferList.filter(({ token }) => {
+          return token.decimals === 0;
+        });
+        const tokenTransferList: ITransaction[] = stepnTransferList.map(
+          (tx) => {
+            const { source_owner, destination_owner, token } = tx;
+            return {
+              txId: k,
+              tokenAddress: token.address,
+              type:
+                {
+                  [source_owner]: "SELL",
+                  [destination_owner]: "BUY",
+                }[account] || "UNDEFINED",
+            } as ITransaction;
+          }
+        );
+        txArray.push(...tokenTransferList);
+      }
+      setTransferDetails(txArray);
+    } catch (e) {}
     setLoading(false);
   };
 
