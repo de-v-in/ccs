@@ -1,29 +1,35 @@
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
-const limits = [
-  { amount: 10 },
-  { amount: 30 },
-  { amount: 50 },
-  { amount: 100 },
-];
+export const SelectLimit = ({
+  limits,
+  onSelect,
+  current,
+}: {
+  current: { amount: number };
+  limits: { amount: number }[];
+  onSelect: (limit: { amount: number }) => void;
+}) => {
+  const [selected, setSelected] = useState(current);
 
-export default function LimitSelect({ selected, setSelected }) {
-  //   const [selected, setSelected] = useState(limits[0]);
-  const handleChange = () => {
-    console.log(selected);
-    return setSelected;
-  };
+  useEffect(() => {
+    if (selected !== current) {
+      onSelect(selected);
+    }
+  }, [selected]);
+
   return (
-    <div className="w-72">
+    <div className="absolute top-0 right-0 bottom-0 flex items-center mr-1">
       <Listbox value={selected} onChange={setSelected}>
-        <div className="relative mt-1">
-          <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-2 pl-3 pr-10 text-left shadow-sm focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-            <span className="block truncate">{selected.amount}</span>
+        <div className="relative">
+          <Listbox.Button className="relative w-full cursor-default rounded-lg bg-gray-600 py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+            <span className="block truncate text-white">
+              LAST <strong>{selected.amount}</strong> TX
+            </span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
               <SelectorIcon
-                className="h-5 w-5 text-gray-400"
+                className="h-5 w-5 text-gray-300"
                 aria-hidden="true"
               />
             </span>
@@ -39,7 +45,7 @@ export default function LimitSelect({ selected, setSelected }) {
                 <Listbox.Option
                   key={personIdx}
                   className={({ active }) =>
-                    `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                    `relative cursor-default select-none py-2 flex justify-center pl-2 ${
                       active ? "bg-amber-100 text-amber-900" : "text-gray-900"
                     }`
                   }
@@ -48,14 +54,14 @@ export default function LimitSelect({ selected, setSelected }) {
                   {({ selected }) => (
                     <>
                       <span
-                        className={`block truncate ${
+                        className={`block truncate${
                           selected ? "font-medium" : "font-normal"
                         }`}
                       >
                         {limit.amount}
                       </span>
                       {selected ? (
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                        <span className="absolute inset-y-0 left-0 flex items-center text-amber-600 ml-1">
                           <CheckIcon className="h-5 w-5" aria-hidden="true" />
                         </span>
                       ) : null}
@@ -69,4 +75,4 @@ export default function LimitSelect({ selected, setSelected }) {
       </Listbox>
     </div>
   );
-}
+};
