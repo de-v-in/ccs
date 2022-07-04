@@ -146,12 +146,10 @@ const RowInfo: React.FC<
 
 export const Table = ({ items = [] }: { items: ITransaction[] }) => {
   const [showModal, setShowModal] = useState(false);
-  const [crrTokenMeta, setTokenMeta] = useState<ITokenMeta | undefined>(
-    undefined
-  );
+  const [crrTokenMeta, setTokenMeta] = useState<ITokenMeta | null>(null);
 
   const handleClose = () => setShowModal(false);
-  const handleOpenDialog = (item: ITokenMeta) => {
+  const handleOpenDialog = (item: ITokenMeta | null) => {
     setTokenMeta(item);
     setShowModal(true);
   };

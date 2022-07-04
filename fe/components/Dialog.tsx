@@ -2,7 +2,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment } from "react";
 
 export const TokenInfoDialog: React.FC<{
-  item?: ITokenMeta;
+  item: ITokenMeta | null;
   isOpen: boolean;
   closeModal: () => void;
 }> = ({ isOpen, closeModal, item }) => {

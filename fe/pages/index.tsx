@@ -1,5 +1,4 @@
-import { Listbox } from "@headlessui/react";
-import { Add, PublicKey } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import { debounce } from "lodash";
 import type { NextPage } from "next";
 import Head from "next/head";
