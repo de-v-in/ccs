@@ -8,7 +8,7 @@ const {
   metadata: { Metadata },
 } = programs;
 
-export default async function userHandler(
+export default async function tokenMetaHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {

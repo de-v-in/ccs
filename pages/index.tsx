@@ -1,10 +1,6 @@
-<<<<<<< HEAD:fe/pages/index.tsx
-import { PublicKey } from "@solana/web3.js";
-=======
 import { getAccountTransactionsAPI } from "@apis/crawl";
 import { SelectLimit } from "@components/SelectLimit";
 import { Table } from "@components/Table";
->>>>>>> 4641cb0 ([Feat] Move to NextJS, bind Dockerfile):pages/index.tsx
 import { debounce } from "lodash";
 import type { NextPage } from "next";
 import Head from "next/head";

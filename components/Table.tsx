@@ -150,15 +150,10 @@ export const Table = ({ items = [] }: { items: ITransaction[] }) => {
 
   const handleClose = () => setShowModal(false);
   const handleOpenDialog = (item: ITokenMeta | null) => {
-<<<<<<< HEAD:fe/components/Table.tsx
-    setTokenMeta(item);
-    setShowModal(true);
-=======
     if (item) {
       setTokenMeta(item);
       setShowModal(true);
     }
->>>>>>> 4641cb0 ([Feat] Move to NextJS, bind Dockerfile):components/Table.tsx
   };
 
   const renderItems = useMemo(() => {

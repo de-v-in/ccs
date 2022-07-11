@@ -2,7 +2,7 @@ import { APIConfig } from "@configs/api";
 import { APIQueueItem } from "@saintno/needed-tools";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-export default async function userHandler(
+export default async function accountHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {

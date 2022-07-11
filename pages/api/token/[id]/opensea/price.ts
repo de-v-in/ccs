@@ -1,7 +1,7 @@
 import { exec } from "child_process";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-export default async function userHandler(
+export default async function openseaPriceHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
