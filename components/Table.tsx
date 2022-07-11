@@ -28,10 +28,10 @@ const RowInfo: React.FC<
       .then((data) => setMeta(data))
       .catch((e) => {})
       .finally(() => setMetaLoading(false));
-    getTokenOpenSeaPricingAPI(item.tokenAddress)
-      .then((data) => (data ? setPrice(data) : null))
-      .catch((e) => {})
-      .finally(() => setPriceLoading(false));
+    // getTokenOpenSeaPricingAPI(item.tokenAddress)
+    //   .then((data) => (data ? setPrice(data) : null))
+    //   .catch((e) => {})
+    //   .finally(() => setPriceLoading(false));
     getW3Service()
       .getTransInfo(item.txId)
       .catch((e) => {})
