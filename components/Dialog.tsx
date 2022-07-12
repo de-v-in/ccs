@@ -9,7 +9,7 @@ export const TokenInfoDialog: React.FC<{
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        <Dialog as="div" className="relative z-90" onClose={closeModal}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -33,14 +33,17 @@ export const TokenInfoDialog: React.FC<{
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="transform overflow-hidden rounded-2xl bg-white p-4 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="transform overflow-hidden rounded-2xl bg-white p-4 text-left align-middle shadow-xl transition-all relative">
                   <Dialog.Title
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
                     {item?.name}
                   </Dialog.Title>
-                  <div className="mt-2 flex flex-row" style={{ maxWidth: 700 }}>
+                  <div
+                    className="mt-2 flex flex-col md:flex-row"
+                    style={{ maxWidth: 700 }}
+                  >
                     <div>
                       <img
                         alt="item"
@@ -54,7 +57,7 @@ export const TokenInfoDialog: React.FC<{
                         className="rounded-lg mt-1"
                       />
                     </div>
-                    <div className="ml-4 flex flex-col">
+                    <div className="mt-3 md:mt-0 md:ml-4 flex flex-col">
                       <label className="text-xs font-bold text-gray-500">
                         ATTRIBUTES
                       </label>
@@ -64,7 +67,7 @@ export const TokenInfoDialog: React.FC<{
                           .map((attribute) => (
                             <div
                               key={attribute.trait_type}
-                              className="w-1/3 p-1"
+                              className="w-1/2 md:w-1/3 p-1"
                             >
                               <div className="flex flex-col p-2 rounded-md justify-center items-center border border-gray-400 bg-gray-200">
                                 <span className="text-zinc-500 text-sm">
