@@ -19,3 +19,12 @@ interface ISolscanData {
   slot: number;
   fee: number;
 }
+
+interface IStepNSPLTransfer extends ISolscanData {
+  balance: IBalance;
+}
+
+interface IBalance {
+  amount: string;
+  decimals: number;
+}

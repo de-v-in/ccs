@@ -2,6 +2,9 @@ import { APIConfig } from "@configs/api";
 import { APIQueueItem } from "@saintno/needed-tools";
 import type { NextApiRequest, NextApiResponse } from "next";
 
+// Allow up to 20 jobs at once
+APIQueueItem.getQueueInstance().maxProcessing = 20;
+
 export default async function accountHandler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -19,47 +22,41 @@ export default async function accountHandler(
         APIConfig.SOL_SCAN_SPL(id as string, pOffset, pLimit)
       ).get<ISolscanAPI>();
       const transferList = data.data;
-
-      const stepnTokenTransfer = transferList.filter((transfer: any) => {
-        return transfer.decimals == 0;
-      });
-
-      const tokenAddressSignatureList = stepnTokenTransfer.map(
-        ({ tokenAddress, signature }: any) => ({
-          tokenAddress,
-          signature: signature[0],
+      const transferMap = {};
+      const getTokenMetaApiList = transferList
+        .map((transfer) => {
+          transferMap[transfer.tokenAddress] = transfer;
+          return transfer.tokenAddress;
         })
-      );
-
-      const transactionDetailObj = {};
-      const promiseList: { tokenTransfers: string; signature: string }[] = [];
-      for (const { signature } of tokenAddressSignatureList) {
-        const txDetail: any = new Promise((resolve, reject) => {
-          new APIQueueItem(APIConfig.SOL_SCAN_TRANS(signature))
-            .get()
-            .then((data: any) => {
-              resolve({
-                tokenTransfers: data.tokenTransfers,
-                signature,
-              });
-            })
-            .catch((err) => reject(err));
+        .map((address) => {
+          return new Promise((resolve, reject) => {
+            new APIQueueItem(APIConfig.SOL_SCAN_TOKEN_META(address))
+              .get()
+              .then((data: any) => {
+                resolve({
+                  tokenMeta: data,
+                  address,
+                });
+              })
+              .catch((err) => reject(err));
+          });
         });
-        promiseList.push(txDetail);
-      }
-
-      await Promise.allSettled(promiseList).then((results) =>
+      const stepnTokens: any = [];
+      await Promise.allSettled(getTokenMetaApiList).then((results) =>
         results.forEach((result: any) => {
-          if (result?.value) {
-            const { signature, tokenTransfers } = result.value;
-            if (signature) {
-              transactionDetailObj[signature] = tokenTransfers;
+          console.log("result.value", result.value);
+          if (result.value) {
+            const { tokenMeta, address } = result.value;
+            const nameArr = tokenMeta.name.split(" ");
+            if (nameArr[0] === "Sneaker") {
+              stepnTokens.push(transferMap[address]);
             }
           }
         })
       );
-
-      res.status(200).json(transactionDetailObj);
+      // console.log("transactionDetailObj", transactionDetailObj);
+      console.log("stepnTokens", stepnTokens);
+      res.status(200).json(stepnTokens);
       break;
     default:
       res.setHeader("Allow", ["GET"]);
