@@ -2,6 +2,9 @@ import { APIConfig } from "@configs/api";
 import { APIQueueItem } from "@saintno/needed-tools";
 import type { NextApiRequest, NextApiResponse } from "next";
 
+// Allow up to 20 jobs at once
+APIQueueItem.getQueueInstance().maxProcessing = 20;
+
 export default async function accountHandler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -53,7 +56,7 @@ export default async function accountHandler(
       );
       // console.log("transactionDetailObj", transactionDetailObj);
       console.log("stepnTokens", stepnTokens);
-      res.status(200).json({});
+      res.status(200).json(stepnTokens);
       break;
     default:
       res.setHeader("Allow", ["GET"]);

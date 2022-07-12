@@ -25,28 +25,18 @@ const Home: NextPage = () => {
     setLoading(true);
     try {
       const data = await getAccountTransactionsAPI(account, limit.amount);
-      const txArray: ITransaction[] = [];
-      for (const k in data) {
-        const transferList = data[k];
-        const stepnTransferList = transferList.filter(({ token }) => {
-          return token.decimals === 0;
-        });
-        const tokenTransferList: ITransaction[] = stepnTransferList.map(
-          (tx) => {
-            const { source_owner, destination_owner, token } = tx;
-            return {
-              txId: k,
-              tokenAddress: token.address,
-              type:
-                {
-                  [source_owner]: "SELL",
-                  [destination_owner]: "BUY",
-                }[account] || "UNDEFINED",
-            } as ITransaction;
-          }
-        );
-        txArray.push(...tokenTransferList);
-      }
+      const txArray: ITransaction[] = data.map((tx) => {
+        const { tokenAddress, changeType, blockTime } = tx;
+        return {
+          blockTime,
+          tokenAddress,
+          type:
+            {
+              dec: "SELL",
+              inc: "BUY",
+            }[changeType] || "UNDEFINED",
+        } as ITransaction;
+      });
       setTransferDetails(txArray);
     } catch (e) {}
     setLoading(false);

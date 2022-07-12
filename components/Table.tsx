@@ -17,7 +17,6 @@ const RowInfo: React.FC<
   const [priceLoading, setPriceLoading] = useState(false);
   const [meta, setMeta] = useState<ITokenMeta | null>(null);
   const [price, setPrice] = useState<number | null>(null);
-  const [trans, setTrans] = useState<TransactionResponse | null>(null);
 
   const handleInfo = () => item.onPress(meta);
 
@@ -28,14 +27,10 @@ const RowInfo: React.FC<
       .then((data) => setMeta(data))
       .catch((e) => {})
       .finally(() => setMetaLoading(false));
-    // getTokenOpenSeaPricingAPI(item.tokenAddress)
-    //   .then((data) => (data ? setPrice(data) : null))
-    //   .catch((e) => {})
-    //   .finally(() => setPriceLoading(false));
-    getW3Service()
-      .getTransInfo(item.txId)
+    getTokenOpenSeaPricingAPI(item.tokenAddress)
+      .then((data) => (data ? setPrice(data) : null))
       .catch((e) => {})
-      .then((data) => !!data && setTrans(data));
+      .finally(() => setPriceLoading(false));
   }, [item]);
 
   return (
@@ -69,12 +64,12 @@ const RowInfo: React.FC<
           />
         )}
       </td>
-      <th
-        scope="row"
-        className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap"
-      >
-        <TextWithCopy text={item.txId} />
-      </th>
+      {/* <th */}
+      {/*   scope="row" */}
+      {/*   className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap" */}
+      {/* > */}
+      {/*   <TextWithCopy text={item.txId} /> */}
+      {/* </th> */}
       <th
         scope="row"
         className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap"
@@ -127,9 +122,7 @@ const RowInfo: React.FC<
         scope="row"
         className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap"
       >
-        {trans?.blockTime
-          ? moment(new Date(trans.blockTime * 1000)).fromNow()
-          : "--"}
+        {moment(item.blockTime * 1000).fromNow() ?? "--"}
       </th>
       <td className="px-6 py-4 text-right">
         <button
@@ -170,9 +163,9 @@ export const Table = ({ items = [] }: { items: ITransaction[] }) => {
             <th scope="col" className="px-6 py-3 whitespace-nowrap">
               Image
             </th>
-            <th scope="col" className="px-6 py-3 whitespace-nowrap">
-              Tx
-            </th>
+            {/* <th scope="col" className="px-6 py-3 whitespace-nowrap"> */}
+            {/*   Tx */}
+            {/* </th> */}
             <th scope="col" className="px-6 py-3 whitespace-nowrap">
               Name
             </th>

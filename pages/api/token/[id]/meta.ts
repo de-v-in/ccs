@@ -26,7 +26,7 @@ export default async function tokenMetaHandler(
 
         return tokenmeta.data.data.uri;
       })();
-      const meta = await new APIQueueItem(stepnUri).get();
+      const meta = await new APIQueueItem(stepnUri).now().get();
       res.status(200).json(meta);
       break;
     default:
