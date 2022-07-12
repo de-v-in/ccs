@@ -7,12 +7,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { ChangeEventHandler, useEffect, useState } from "react";
 
-const limits = [
-  { amount: 10 },
-  { amount: 30 },
-  { amount: 50 },
-  { amount: 100 },
-];
+const limits = [{ amount: 10 }, { amount: 30 }, { amount: 50 }];
 const Home: NextPage = () => {
   const [account, setAccount] = useState("");
   const [loading, setLoading] = useState(false);
