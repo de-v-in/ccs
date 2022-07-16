@@ -18,7 +18,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v3
@@ -62,5 +61,5 @@ jobs:
             docker pull ${{ steps.meta.outputs.tags }}
             cd $HOME && \
             docker stop ccs || true && docker rm ccs || true && \
-            docker run -d --restart unless-stopped --name ccs -p 3000:3000 ghcr.io/de-v-in/ccs
+            docker run -d --restart unless-stopped --name ccs -p 3000:3000 ${{ steps.meta.outputs.tags }}
             echo "Succesful deploy"
