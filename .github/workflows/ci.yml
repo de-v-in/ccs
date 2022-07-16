@@ -62,5 +62,5 @@ jobs:
             docker pull ${{ steps.meta.outputs.tags }}
             cd $HOME && \
             docker stop ccs || true && docker rm ccs || true && \
-            docker run -d --restart unless-stopped --name ccs -p 3000:3000 ccs
+            docker run -d --restart unless-stopped --name ccs -p 3000:3000 ghcr.io/de-v-in/ccs
             echo "Succesful deploy"
