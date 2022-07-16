@@ -20,6 +20,7 @@ const Home: NextPage = () => {
     setLoading(true);
     try {
       const data = await getAccountTransactionsAPI(account, limit.amount);
+
       const txArray: ITransaction[] = data.map((tx) => {
         const { tokenAddress, changeType, blockTime } = tx;
         return {

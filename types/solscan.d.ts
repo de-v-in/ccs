@@ -28,3 +28,25 @@ interface IBalance {
   amount: string;
   decimals: number;
 }
+
+interface ISolscanTradeAPI {
+  data: ISolscanTradeData[];
+}
+interface ISolscanTradeMeta {
+  _id: string;
+  mint: string;
+  name: string;
+  symbol: string;
+  buyer: string;
+  seller: string;
+  price: number;
+  collection: string;
+  collectionId: string;
+  tradeTime: number;
+  dex: string;
+  signature: string;
+  family: string;
+  type: string;
+  image: string;
+  attributes: any[];
+}

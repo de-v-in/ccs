@@ -18,3 +18,11 @@ export const getTokenOpenSeaPricingAPI = async (address: string) => {
     .get<{ result: false | string }>();
   return output.result ? parseFloat(output.result) : false;
 };
+
+export const getTokenTradePriceAPI = async (address: string, limit: number) => {
+  return new APIQueueItem(
+    `/api/token/${address}/tradePrice?offset=0&limit=${limit}`
+  )
+    .now()
+    .get<ISolscanTradeMeta[]>();
+};

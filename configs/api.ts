@@ -6,4 +6,6 @@ export const APIConfig = {
     `https://public-api.solscan.io/transaction/${sig}`,
   SOL_SCAN_TOKEN_META: (address: string) =>
     `https://public-api.solscan.io/token/meta?tokenAddress=${address}`,
+  SOL_SCAN_NFT_TRADE_META: (address: string, offset: number, limit: number) =>
+    `https://api.solscan.io/nft/trade?mint=${address}&offset=${offset}&limit=${limit}`,
 };

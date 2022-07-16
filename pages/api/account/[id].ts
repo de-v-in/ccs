@@ -44,7 +44,6 @@ export default async function accountHandler(
       const stepnTokens: any = [];
       await Promise.allSettled(getTokenMetaApiList).then((results) =>
         results.forEach((result: any) => {
-          console.log("result.value", result.value);
           if (result.value) {
             const { tokenMeta, address } = result.value;
             const nameArr = tokenMeta.name.split(" ");
@@ -54,8 +53,6 @@ export default async function accountHandler(
           }
         })
       );
-      // console.log("transactionDetailObj", transactionDetailObj);
-      console.log("stepnTokens", stepnTokens);
       res.status(200).json(stepnTokens);
       break;
     default:
